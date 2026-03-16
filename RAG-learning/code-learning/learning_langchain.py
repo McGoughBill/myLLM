@@ -7,7 +7,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.prompts import ChatPromptTemplate
-from transformers import Qwen3VLForConditionalGeneration, AutoProcessor, pipeline
+from transformers import Qwen3VLForConditionalGeneration, AutoProcessor, pipeline, AutoModelForCausalLM
 from langchain_huggingface.llms import HuggingFacePipeline
 
 os.environ['USER_AGENT'] = 'my-rag-app/1.0'
@@ -23,7 +23,7 @@ def load_pdf(pdf_location):
 # Use a model specifically trained for Question/Answer retrieval
 embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
-    model_kwargs={'device': 'cuda'},
+    model_kwargs={'device': 'mps'},
     encode_kwargs={'normalize_embeddings': True}
 )
 
@@ -44,16 +44,16 @@ vectorstore = Chroma.from_documents(split_docs, embeddings)
 retriever = vectorstore.as_retriever()
 Question = "What should this candidate expect in terms of salary and benefits in the UK, working for a mid-sized company as a ML researcher?"
 
-local_qwen_path = '/home/bill/Downloads/qwen'
+local_qwen_path = '/Users/bill/Documents/qwen'
 
 access_token = os.getenv("HF_TOKEN")
 # default: Load the model on the available device(s)
-model = Qwen3VLForConditionalGeneration.from_pretrained(
-    local_qwen_path,local_files_only=True,dtype="auto", device_map="auto",
+model = AutoModelForCausalLM.from_pretrained(
+    local_qwen_path,local_files_only=True,dtype="auto", device_map="mps",
     token=access_token, trust_remote_code=True
 )
 
-processor = AutoProcessor.from_pretrained(local_qwen_path,local_files_only=True,dtype="auto", device_map="auto")
+processor = AutoProcessor.from_pretrained(local_qwen_path,local_files_only=True,dtype="mps", device_map="auto")
 
 
 # convert huggingface model interface to langchain's Runnable interface using a wrapper
@@ -61,7 +61,7 @@ processor = AutoProcessor.from_pretrained(local_qwen_path,local_files_only=True,
 pipe = pipeline(
     "text-generation",
     model=model,
-    tokenizer=processor.tokenizer,
+    tokenizer=processor,
     max_new_tokens=2000, # Adjust based on how long you want the answer to be
     return_full_text=False # Ensures the model only returns the answer, not the prompt
 )
@@ -81,5 +81,5 @@ Based on the above segments, answer the following question:
 
 rag_chain = ( {'context':retriever, 'question':RunnablePassthrough()} | prompt_lg | llm | StrOutputParser() )
 
-response = rag_chain.invoke('What should this candidate expect in terms of salary and benefits in the UK, working for a mid-sized company as a ML researcher?')
+response = rag_chain.invoke('What is the candidates greatest strength?')
 print(response)

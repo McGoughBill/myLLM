@@ -18,7 +18,7 @@ def load_pdf(pdf_location):
 # Use a model specifically trained for Question/Answer retrieval
 embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
-    model_kwargs={'device': 'cuda'},
+    model_kwargs={'device': 'mps'},
     encode_kwargs={'normalize_embeddings': True}
 )
 
@@ -60,14 +60,14 @@ Based on the above segments, answer the following question:
 """
 
 # Then, pass it to Qwen.
-from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
+from transformers import Qwen3VLForConditionalGeneration, AutoProcessor, AutoModelForCausalLM
 import torch
 
-local_qwen_path = '/home/bill/Downloads/qwen'
+local_qwen_path = '/Users/bill/Documents/qwen'
 
 access_token = os.getenv("HF_TOKEN")
 # default: Load the model on the available device(s)
-model = Qwen3VLForConditionalGeneration.from_pretrained(
+model = AutoModelForCausalLM.from_pretrained(
     local_qwen_path,local_files_only=True,dtype="auto", device_map="auto",
     token=access_token, trust_remote_code=True
 )
@@ -77,11 +77,11 @@ processor = AutoProcessor.from_pretrained(local_qwen_path,local_files_only=True,
 messages = [
     {
         "role": "user",
-        "content": [
-            {"type": "text", "text": prompt},
-        ],
+        "content":  prompt
     }
 ]
+
+print(messages)
 
 # Preparation for inference
 inputs = processor.apply_chat_template(

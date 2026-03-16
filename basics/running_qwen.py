@@ -1,7 +1,7 @@
 from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
 import os
 
-local_qwen_path = '/home/bill/Downloads/qwen'
+local_qwen_path = '/Users/bill/Documents/qwen'
 
 access_token = os.getenv("HF_TOKEN")
 # default: Load the model on the available device(s)
