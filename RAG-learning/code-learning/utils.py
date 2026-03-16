@@ -33,7 +33,7 @@ def get_qwen_pipeline(location,max_new_tokens=500):
         "text-generation",
         model=model,
         tokenizer=processor.tokenizer,
-        max_new_tokens=200,  # Adjust based on how long you want the answer to be
+        max_new_tokens=max_new_tokens,  # Adjust based on how long you want the answer to be
         return_full_text=False  # Ensures the model only returns the answer, not the prompt
     )
 
@@ -51,6 +51,9 @@ def get_unique_union(documents: list[list]):
 
 def get_top_unique_documents(documents: list[list], top_k=5):
     """ Unique union of retrieved docs """
+    # This is a really unoptimised function - we are comparing whole document sections for exact matches with
+
+
     # Flatten list of lists, and convert each Document to string
     flattened_docs = [dumps(doc) for sublist in documents for doc in sublist]
 
