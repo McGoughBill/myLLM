@@ -17,7 +17,7 @@ splits = utils.get_example_docsplits() #loads a set of agentic AI papers from th
 retriever = utils.get_retriever(splits=splits)
 
 # Multi Query: Different Perspectives
-template = """Generate three different versions of the given user original question to retrieve relevant documents from a vector database. By generating three perspectives on the user question, your goal is to help the user overcome some of the limitations of the distance-based similarity search. Provide these alternative three questions separated by newlines. Original question: {question}"""
+template = """Read the following user query Original question: {question}"""
 prompt_perspectives = ChatPromptTemplate.from_template(template)
 local_qwen_path = '/Users/bill/Documents/qwen_3.5_8B'
 
