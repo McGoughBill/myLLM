@@ -25,3 +25,14 @@ corrective-RAG (or CRAG).
    2) Otherwise, we seek outside information via a web search or an alternative source.
 
 The key here is the idea of 'absolute relevance' and a 'relevance threshold'.
+
+This relevance-ranking system is the engine behind Cohere's RAG system, which is used by many software companies, including
+Notion. Not only is this system fantastic at assessing quality and implementing a non-arbitrary relevance cut-off, it allows
+the observability and monitoring of document utility over time.
+
+Cohere's Rerank can be applied on top of retrieved documents. Hence, usually, the workflow is that a large number of documents are 
+initially retrieved (say, 10-20), before being reranked and selected by Cohere's system. See an example at this link: https://docs.langchain.com/oss/python/integrations/retrievers/cohere-reranker#doing-reranking-with-coherererank
+
+We are going to play around with crag in langgraph! Checkout crag_basic.py for this, and see here for the notebook this learning came from: https://github.com/langchain-ai/langgraph/blob/main/examples/rag/langgraph_crag.ipynb.
+
+We use tavily as an API-based search engine.
