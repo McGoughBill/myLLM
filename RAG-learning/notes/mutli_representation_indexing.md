@@ -40,4 +40,12 @@ loss means we may miss the ability to connect correct documents to our answers. 
 Approach for ColBERT:
 
 1) produce embedding for every TOKEN in document (could be thousands, or millions)
+2) Then, do the same for the question (per token embedding)
+3) Then, find the similarity of all query tokens to all document tokens (omg this sounds like a lot)
+4) find the document that corresponds to the max similarity to each query token
+5) Then, tally the score of each document (how many times was one of its tokens the max)
+6) Insert the top-k documents.
+
+Performance is extremely high for ColBERT, but latency (and raw computation!) is a real issue.
+
 
