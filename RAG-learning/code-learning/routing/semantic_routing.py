@@ -14,7 +14,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.utils.math import cosine_similarity
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
-import utils
+from code_learning import utils
 
 splits = utils.get_example_docsplits() #loads a set of agentic AI papers from the web
 retriever = utils.get_retriever(splits=splits)

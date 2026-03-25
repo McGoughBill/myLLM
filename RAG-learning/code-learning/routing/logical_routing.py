@@ -10,7 +10,7 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-import utils
+from code_learning import utils
 
 splits = utils.get_example_docsplits() #loads a set of agentic AI papers from the web
 retriever = utils.get_retriever(splits=splits)
