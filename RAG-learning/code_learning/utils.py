@@ -41,6 +41,20 @@ def get_qwen_pipeline(location,max_new_tokens=500):
     llm = HuggingFacePipeline(pipeline=pipe)
     return llm
 
+def get_qwen_text_model(location):
+    model = Qwen3_5ForConditionalGeneration.from_pretrained(location, local_files_only=True, torch_dtype="auto", device_map="auto")
+    tokenizer = AutoTokenizer.from_pretrained(location, local_files_only=True)
+    return model, tokenizer
+
+def apply_pipeline_qwen_model(model,tokenizer,max_new_tokens=500):
+    return HuggingFacePipeline(pipeline=pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        max_new_tokens=max_new_tokens,
+        return_full_text=False,
+    ))
+
 
 def get_qwen_text_pipeline(location, max_new_tokens=500):
     model = Qwen3_5ForConditionalGeneration.from_pretrained(location, local_files_only=True, torch_dtype="auto", device_map="auto")

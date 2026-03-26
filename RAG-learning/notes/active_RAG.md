@@ -34,5 +34,18 @@ Cohere's Rerank can be applied on top of retrieved documents. Hence, usually, th
 initially retrieved (say, 10-20), before being reranked and selected by Cohere's system. See an example at this link: https://docs.langchain.com/oss/python/integrations/retrievers/cohere-reranker#doing-reranking-with-coherererank
 
 We are going to play around with crag in langgraph! Checkout crag_basic.py for this, and see here for the notebook this learning came from: https://github.com/langchain-ai/langgraph/blob/main/examples/rag/langgraph_crag.ipynb.
-
 We use tavily as an API-based search engine.
+
+
+**CRAG in langgraph**
+
+The essential promise of langgraph is that the state of our agent - that is, everything referring to what LLM has done, information it has stored,
+and what it will do next - is stored in a simple dictionary (or dictionary-like object). Functions interact with this state, altering its values
+and adding new key:value pairs, and a meta-script passes it along.
+
+the dictionary acts as the agent's memory. the functions act as nodes that process the agent. The meta-script acts as the edges that respond
+to each function's processing and passes it on to it's next state.
+
+In the example script from crag_with_langgraph, the meta-script is hard-coded (i.e., the steps are somewhat deterministic; there are conditional statements,
+but the code will deterministically end after n steps). We could imagine a future where the LLM's decide what step to take next, and whether previous steps need to be
+revisited in light of new information and conditions.

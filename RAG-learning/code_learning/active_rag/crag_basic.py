@@ -13,6 +13,7 @@ from code_learning import utils
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 from langchain_core.exceptions import OutputParserException
+from langchain_community.tools.tavily_search import TavilySearchResults
 
 #we will use my CV as a base document.
 pdf_location = os.path.join(os.path.dirname(__file__), '../../example_docs/CV_noL.pdf')
@@ -81,11 +82,26 @@ retrieval_grader = grade_prompt | llm | RunnableLambda(log_llm_output) | parser
 question = "Does this candidate have experience developing deep learning solutions?"
 
 docs = retriever.invoke(question)
+relevances = []
 for i,doc in enumerate(docs):
-    print(f"\n{'─' * 40}\n Document {i + 1}\n{'─' * 40}")
-    print(doc.page_content)
     try:
         relevance_grade = retrieval_grader.invoke({"question": question, "document": doc.page_content})
     except OutputParserException as err:
         relevance_grade = None
-    print(f"\n{'#' * 10}\n Relevance grade: {relevance_grade}\n{'#' * 10}\n\n")
+    print(type(relevance_grade),relevance_grade)
+    relevances.append(relevance_grade.score)
+
+## once we have assessed the document for relevance, we can decide whether we need outside information to substantiate our answer
+from langchain_core.documents import Document
+
+web_search_tool = TavilySearchResults(k=5)
+
+if max(relevances)>0.5:
+    pass
+else:
+    docs = web_search_tool.invoke({"query": question})
+    web_results = "\n".join([d["content"] for d in docs])
+    web_results = Document(page_content=web_results)
+    documents.append(web_results)
+
+## then, we can generate the answers with the relevant web-based docs, if our internal docs were insufficient.
