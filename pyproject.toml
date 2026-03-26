@@ -7,7 +7,7 @@ name = "code-learning"
 version = "0.1.0"
 
 [tool.setuptools]
-packages = ["code_learning", "code_learning.query_translation", "code_learning.routing", "code_learning.basics"]
+packages = ["code_learning", "code_learning.query_translation", "code_learning.routing", "code_learning.basics", "code_learning.active_rag"]
 
 [tool.setuptools.package-dir]
-"code_learning" = "RAG-learning/code-learning"
+"code_learning" = "RAG-learning/code_learning"

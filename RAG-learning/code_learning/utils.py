@@ -2,7 +2,7 @@ import os
 import bs4
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
-from transformers import Qwen3VLForConditionalGeneration, AutoProcessor, pipeline, AutoModelForCausalLM
+from transformers import Qwen3VLForConditionalGeneration,Qwen3_5ForConditionalGeneration, AutoProcessor, pipeline, AutoModelForCausalLM, AutoTokenizer
 from langchain_huggingface.llms import HuggingFacePipeline
 from langchain_core.load import dumps, loads
 from langchain_community.document_loaders import WebBaseLoader
@@ -11,7 +11,7 @@ from collections import Counter
 
 
 
-def get_retriever(splits):
+def get_retriever(splits,doc_name=None):
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
         model_kwargs={'device': 'mps'},
@@ -19,7 +19,8 @@ def get_retriever(splits):
     )
 
     vectorstore = Chroma.from_documents(documents=splits,
-                                        embedding=embeddings)
+                                        embedding=embeddings,
+                                        collection_name=doc_name)
     retriever = vectorstore.as_retriever()
 
     return retriever
@@ -34,7 +35,37 @@ def get_qwen_pipeline(location,max_new_tokens=500):
         model=model,
         tokenizer=processor.tokenizer,
         max_new_tokens=max_new_tokens,  # Adjust based on how long you want the answer to be
-        return_full_text=False  # Ensures the model only returns the answer, not the prompt
+        return_full_text=False,  # Ensures the model only returns the answer, not the prompt
+    )
+
+    llm = HuggingFacePipeline(pipeline=pipe)
+    return llm
+
+def get_qwen_text_model(location):
+    model = Qwen3_5ForConditionalGeneration.from_pretrained(location, local_files_only=True, torch_dtype="auto", device_map="auto")
+    tokenizer = AutoTokenizer.from_pretrained(location, local_files_only=True)
+    return model, tokenizer
+
+def apply_pipeline_qwen_model(model,tokenizer,max_new_tokens=500):
+    return HuggingFacePipeline(pipeline=pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        max_new_tokens=max_new_tokens,
+        return_full_text=False,
+    ))
+
+
+def get_qwen_text_pipeline(location, max_new_tokens=500):
+    model = Qwen3_5ForConditionalGeneration.from_pretrained(location, local_files_only=True, torch_dtype="auto", device_map="auto")
+    tokenizer = AutoTokenizer.from_pretrained(location, local_files_only=True)
+
+    pipe = pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        max_new_tokens=max_new_tokens,
+        return_full_text=False,
     )
 
     llm = HuggingFacePipeline(pipeline=pipe)
