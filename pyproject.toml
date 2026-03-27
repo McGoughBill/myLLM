@@ -11,3 +11,6 @@ packages = ["code_learning", "code_learning.query_translation", "code_learning.r
 
 [tool.setuptools.package-dir]
 "code_learning" = "RAG-learning/code_learning"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

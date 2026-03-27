@@ -49,3 +49,23 @@ to each function's processing and passes it on to it's next state.
 In the example script from crag_with_langgraph, the meta-script is hard-coded (i.e., the steps are somewhat deterministic; there are conditional statements,
 but the code will deterministically end after n steps). We could imagine a future where the LLM's decide what step to take next, and whether previous steps need to be
 revisited in light of new information and conditions.
+
+We coded up our own custom agent in langgraph! It was great!
+
+**Langgraph**
+
+The key aspect of technical advancement present in our agent is the notion of a graph-like agent state, supported by the python package LangGraph. Langgraph
+explicitly requires the user to define the workflow as a graph, where each node is associated with a python-defined function, and for this graph to compile.
+We chose a simple graph to start out journey, obviously. All but one graph edge was defined as a normal feed-forward edge. We added a single conditional edge,
+according to the presence of relevance in our retrieved documents.
+
+Conditional edge use string-based outputs of python-defined functions to inform direction of travel - in custom_crag_with_langgraph, note how 'decide_to_generate's output
+is a string, unlike the other functions.
+
+**Adaptive RAG**
+
+The idea of constantly checking outputs, retrieved documents, and LLM statements for relevance. This is using an LLM to identify holes in answers and actually seek to close
+them actively. Think of the RAG system as having some PID controller where the answer is the output of the system, which the PID is looking to optimise.
+
+We can unit-test sections of the graph workflow! this is quite a large personal revelation, but of course we can! So, this is making sure our retrievers are reliably bringing 
+relevant documents to the user.
