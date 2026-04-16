@@ -62,6 +62,9 @@ according to the presence of relevance in our retrieved documents.
 Conditional edge use string-based outputs of python-defined functions to inform direction of travel - in custom_crag_with_langgraph, note how 'decide_to_generate's output
 is a string, unlike the other functions.
 
+Langgraph works really well for putting agents on guardrails, as flows become highly predictable, observable, and tool use can be restricted and monitored at the node level.
+
+
 **Adaptive RAG**
 
 The idea of constantly checking outputs, retrieved documents, and LLM statements for relevance. This is using an LLM to identify holes in answers and actually seek to close
@@ -69,3 +72,4 @@ them actively. Think of the RAG system as having some PID controller where the a
 
 We can unit-test sections of the graph workflow! this is quite a large personal revelation, but of course we can! So, this is making sure our retrievers are reliably bringing 
 relevant documents to the user.
+
