@@ -1,7 +1,7 @@
 from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
 import os
 
-local_qwen_path = '/Users/bill/Documents/qwen'
+local_qwen_path = '/Users/bill/Documents/qwen_3.5_8B_VL'
 
 access_token = os.getenv("HF_TOKEN")
 # default: Load the model on the available device(s)
@@ -39,9 +39,11 @@ messages = [
         "content": [
             {
                 "type": "image",
-                "video": "/home/bill/Downloads/images.png",
+                "image": "/Users/bill/Documents/Screenshot 2026-05-22 at 19.43.43.png",
             },
-            {"type": "text", "text": "Describe this video."},
+            {"type": "text", "text": "The attached image is a screenshot of a Pokemon Fire Red. "
+                                     "Specifically, we are in Pallet town. Please desribe the surrounding features of the location,"
+                                     "including descriptions of how far (up,down,left,right) those features are. Keep your descriptions brief and informative."},
         ],
     }
 ]
